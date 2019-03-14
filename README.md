@@ -3,9 +3,11 @@
 Configuration to build a docker image with a build environment
 for LibreOffice Android Viewer.
 
-## Howto login into the container with SSH
+The image is based on Debian and allows access by a regular user
+with sudo rights through SSH via RSA public key authentication.
 
-Debian based Docker image with passwordless SSH access and a regular user with sudo rights.
+
+## How to login into the container with SSH
 
 To run an SSH daemon in a new Debian "stretch" container:
 
@@ -30,7 +32,7 @@ To connect to this container as root:
 Change `2222` to any local port number of your choice.
 
 
-## Howto build LibreOffice for Android
+## How to build LibreOffice for Android
 
 Login in as `docker` user with SSH; Run the `get-libreoffice-core.sh` script
 to clone the latest 100 commits from `master` branch and get a default 
@@ -41,6 +43,6 @@ Just run `make` within the project folder to launch a build.
 
 ## Credits
 
-[Kirill Müller](https://github.com/krlmlr/debian-ssh)
-[Bitrise's Android Docker image](https://github.com/bitrise-docker/android)
-[Bitrise's NDK Android Docker image](https://github.com/bitrise-docker/android-ndk)
+* [Kirill Müller](https://github.com/krlmlr/debian-ssh)
+* [Bitrise's Android Docker image](https://github.com/bitrise-docker/android)
+* [Bitrise's NDK Android Docker image](https://github.com/bitrise-docker/android-ndk)

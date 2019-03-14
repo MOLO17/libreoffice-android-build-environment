@@ -1,0 +1,22 @@
+# The --enable-dbgutil option configures for a developer build, disabling
+# optimizations, enabling debugging support and additional checks.
+#--enable-dbgutil
+#--enable-werror
+#--enable-option-checking=fatal
+
+# Enable optimizations
+#LD_PLUGIN=/opt/android-ndk/toolchains/llvm/prebuilt/????????/lib64/LLVMgold.so
+#--enable-lto
+--disable-debug
+--enable-release-build
+
+# Configuration obtained from: 
+#	distro-configs/LibreOfficeAndroidCustom.conf
+# Please make you changes over there
+--with-distro=LibreOfficeAndroidCustom
+
+# Customize to match your environment
+--with-android-sdk=/opt/android-sdk
+--with-android-ndk=/opt/android-ndk
+--with-jdk-home=/usr/lib/jvm/java-8-openjdk-amd64/
+--with-ant-home=/usr/share/ant

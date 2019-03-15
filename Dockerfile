@@ -49,63 +49,83 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y build-dep libreoffice
 
 # Android
 
-# Set env var
-ENV ANDROID_HOME /opt/android-sdk
+ENV ANDROID_HOME /opt/android-sdk-linux
 
-# Install Android required tools
+
+# Install required tools
 RUN apt-get update -qq
 
-# Base (non android specific) tools
-#...
 
 # Dependencies to execute Android builds
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y openjdk-8-jdk ant libc6-i386 lib32stdc++6 lib32gcc1 lib32ncurses5 lib32z1
+RUN dpkg --add-architecture i386
+RUN apt-get update -qq
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y openjdk-8-jdk libc6:i386 libstdc++6:i386 libgcc1:i386 libncurses5:i386 libz1:i386
+
 
 # Download Android SDK tools into $ANDROID_HOME
-RUN cd /opt && wget -q https://dl.google.com/android/android-sdk_r24.4.1-linux.tgz -O android-sdk.tgz
-RUN cd /opt && tar -xvzf android-sdk.tgz
-RUN cd /opt && rm -f android-sdk.tgz
 
-ENV PATH ${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/tools/bin
+RUN cd /opt \
+    && wget -q https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip -O android-sdk-tools.zip \
+    && unzip -q android-sdk-tools.zip -d ${ANDROID_HOME} \
+    && rm android-sdk-tools.zip
+
+ENV PATH ${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/platform-tools
 
 # Install Android SDKs and other build packages
 
 # Other tools and resources of Android SDK
 #  you should only install the packages you need!
 # To get a full list of available options you can use:
-#  android list sdk --no-ui --all --extended --use-sdk-wrapper
-RUN echo y | android update sdk --no-ui --all --filter \
-  platform-tools,extra-android-support
+#  sdkmanager --list
 
-# google apis
-# Please keep these in descending order!
-RUN echo y | android update sdk --no-ui --all --filter \
-  addon-google_apis-google-24,addon-google_apis-google-23,addon-google_apis-google-22,addon-google_apis-google-21
+# Accept licenses before installing components, no need to echo y for each component
+# License is valid for all the standard components in versions installed from this file
+# Non-standard components: MIPS system images, preview versions, GDK (Google Glass) and Android Google TV require separate licenses, not accepted there
+RUN yes | sdkmanager --licenses
+
+# Platform tools (excluding "emulator")
+RUN sdkmanager "tools" "platform-tools" 
 
 # SDKs
 # Please keep these in descending order!
-RUN echo y | android update sdk --no-ui --all --filter \
-  android-24,android-23,android-22,android-21,android-20,android-19,android-17,android-15,android-10
+# The `yes` is for accepting all non-standard tool licenses.
 
-# build tools
-# Please keep these in descending order!
-RUN echo y | android update sdk --no-ui --all --filter \
-  build-tools-24.0.2,build-tools-23.0.2,build-tools-23.0.1,build-tools-22.0.1,build-tools-21.1.2,build-tools-20.0.0,build-tools-19.1.0,build-tools-17.0.0
-
+# Please keep all sections in descending order!
+RUN yes | sdkmanager \
+    "platforms;android-28" \
+    "platforms;android-27" \
+    "platforms;android-26" \
+    "platforms;android-25" \
+    "build-tools;28.0.3" \
+    "build-tools;28.0.2" \
+    "build-tools;28.0.1" \
+    "build-tools;28.0.0" \
+    "build-tools;27.0.3" \
+    "build-tools;27.0.2" \
+    "build-tools;27.0.1" \
+    "build-tools;27.0.0" \
+    "build-tools;26.0.2" \
+    "build-tools;26.0.1" \
+    "build-tools;25.0.3" \
+    "extras;android;m2repository" \
+    "extras;google;m2repository" \
+    "extras;google;google_play_services" \
+    "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2" \
+    "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1"
+    
 # Install Gradle from PPA
 
 # Gradle PPA
-RUN add-apt-repository ppa:cwchien/gradle
-RUN apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install gradle
-RUN gradle -v
+RUN apt-get update \
+ && apt-get -y install gradle \
+ && gradle -v
 
 # Install Maven 3 from PPA
-RUN apt-get purge maven maven2
-RUN add-apt-repository ppa:andrei-pozolotin/maven3
-RUN apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install maven3
-RUN mvn --version
+
+RUN apt-get purge maven maven2 \
+ && apt-get update \
+ && apt-get -y install maven \
+ && mvn --version
 
 
 # Android NDK

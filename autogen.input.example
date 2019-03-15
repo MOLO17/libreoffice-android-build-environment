@@ -16,7 +16,7 @@
 --with-distro=LibreOfficeAndroidCustom
 
 # Customize to match your environment
---with-android-sdk=/opt/android-sdk
+--with-android-sdk=/opt/android-sdk-linux
 --with-android-ndk=/opt/android-ndk
 --with-jdk-home=/usr/lib/jvm/java-8-openjdk-amd64/
 --with-ant-home=/usr/share/ant

@@ -43,6 +43,7 @@ Just run `make` within the project folder to launch a build.
 
 ## Credits
 
+* [Muhammet Kara](https://github.com/mrkara/libreoffice-build-environment)
 * [Kirill Müller](https://github.com/krlmlr/debian-ssh)
 * [Bitrise's Android Docker image](https://github.com/bitrise-docker/android)
 * [Bitrise's NDK Android Docker image](https://github.com/bitrise-docker/android-ndk)

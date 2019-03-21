@@ -28,9 +28,7 @@ and go for a coffee break :)
 
 Login in as `docker` user with SSH (more below) or either with:
 
-
-	docker run -e SSH_KEY="$(cat ~/.ssh/id_rsa.pub)" -it libreoffice-android-build-environment bash
-
+	docker run -it libreoffice-android-build-environment su docker -l
 
 Just run `make` within the `libreoffice-core` project folder to start a build.
 

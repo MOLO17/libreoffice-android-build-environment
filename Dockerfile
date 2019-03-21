@@ -145,6 +145,16 @@ ENV ANDROID_NDK_HOME /opt/android-ndk
 ENV PATH ${PATH}:${ANDROID_NDK_HOME}
 
 
+# GCC 8
+RUN echo 'deb http://ftp.us.debian.org/debian testing main contrib non-free' >> /etc/apt/sources.list
+RUN apt-get update \
+ && apt-get -y -t testing install gcc-8 \
+ && apt remove -y gcc-6
+
+# Gperf
+RUN apt-get install -t testing gperf
+
+
 # Get LibreOffice core
 ENV LO_CORE libreoffice-core
 

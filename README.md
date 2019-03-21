@@ -6,18 +6,46 @@ for LibreOffice Android Viewer.
 The image is based on Debian and allows access by a regular user
 with sudo rights through SSH via RSA public key authentication.
 
+## How to build the docker container
+
+You need [Docker](https://www.docker.com/get-started) and 
+[Git](https://www.git-scm.com/download) to be installed on your platform.
+
+From within a suitable directory of your choice (for example `~/projects/libreoffice`),
+run from the command line:
+
+	git clone https://github.com/MOLO17/libreoffice-android-build-environment.git
+
+then:
+
+	docker build --tag=libreoffice-android-build-environment ./libreoffice-android-build-environment
+
+
+and go for a coffee break :)
+
+
+## How to build LibreOffice for Android
+
+Login in as `docker` user with SSH (more below) or either with:
+
+
+	docker run -e SSH_KEY="$(cat ~/.ssh/id_rsa.pub)" -it libreoffice-android-build-environment bash
+
+
+Just run `make` within the `libreoffice-core` project folder to start a build.
+
 
 ## How to login into the container with SSH
 
-To run an SSH daemon in a new Debian "stretch" container:
+To run an SSH daemon in a new container:
 
-    docker run -d -p 2222:22 -e SSH_KEY="$(cat ~/.ssh/id_rsa.pub)" MOLO17/libreoffice-android-build-environment
+    docker run -d -p 2222:22 -e SSH_KEY="$(cat ~/.ssh/id_rsa.pub)" libreoffice-android-build-environment
 
-This requires a public key in `~/.ssh/id_rsa.pub`.
+That implies a public key in `~/.ssh/id_rsa.pub`.
 
-Two users exist in the container: `root` (superuser) and `docker` (a regular user
-with passwordless `sudo`). SSH access using your key will be allowed for both
-`root` and `docker` users.
+SSH access using your key will be allowed for `docker`
+(a regular user with passwordless `sudo`) and
+`root` (superuser).
 
 To connect to this container as regular user:
 
@@ -29,16 +57,7 @@ To connect to this container as root:
     ssh -p 2222 root@localhost
 
 
-Change `2222` to any local port number of your choice.
-
-
-## How to build LibreOffice for Android
-
-Login in as `docker` user with SSH; Run the `get-libreoffice-core.sh` script
-to clone the latest 100 commits from `master` branch and get a default 
-`autogen.input` configuration.
-
-Just run `make` within the project folder to launch a build.
+You can change `2222` to any local port number of your choice.
 
 
 ## Credits

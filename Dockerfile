@@ -17,8 +17,8 @@ RUN mkdir -p /var/run/sshd && sed -i "s/UsePrivilegeSeparation.*/UsePrivilegeSep
   && true
 
 ## Set a default user. Available via runtime flag `--user docker`
-## Add user to 'staff' group, granting them write privileges to /usr/local/lib/R/site.library
-## User should also have & own a home directory, but also be able to sudo
+## Add user to 'staff' group, granting them write privileges to /usr/local/lib
+## User should also have & own a home directory, and also be able to sudo
 RUN useradd docker \
         && passwd -d docker \
         && mkdir /home/docker \
@@ -48,7 +48,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y build-dep libreoffice
 
 
 # Android
-
 ENV ANDROID_HOME /opt/android-sdk-linux
 
 
@@ -155,7 +154,7 @@ RUN apt-get update \
 RUN apt-get install -t testing gperf
 
 
-# Get LibreOffice core
+# Prepare LibreOffice
 ENV LO_CORE libreoffice-core
 
 ADD autogen.input.example /home/docker/autogen.input.example
@@ -168,6 +167,8 @@ ADD get-libreoffice-core.sh /home/docker/get-libreoffice-core.sh
 RUN chown docker:docker /home/docker/get-libreoffice-core.sh
 RUN chmod ug+x /home/docker/get-libreoffice-core.sh
 
+# Get LibreOffice core
+RUN cd /home/docker/ && sudo -u docker ./get-libreoffice-core.sh
 
 # Purge apt-get cache
 RUN rm -rf /var/lib/apt/lists/*
